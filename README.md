@@ -11,7 +11,7 @@ The program uses python 3 and the built-in json, datetime and sys modules. It re
 ## Usage
 To run the program for the dummy data Danny boy.json, Emma Win.json and Joanna Hef.json, the duration 30 minutes, and the time interval string 2019-04-23T08:00:00/2019-04-27T00:00:00, execute the script. 
 
-To run the script for your own data, place your patient json-files in the same directory as the script and add them to the list on line 106. Run the function with your own parameters at the bottom of the script.
+To run the script for your own data, place your patient json-files in the same directory as the script and add them to the list on line 116. Run the function with your own parameters at the bottom of the script.
 
 
 ## Contributing
