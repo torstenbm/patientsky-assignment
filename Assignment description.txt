@@ -1,0 +1,164 @@
+## Assignment ##
+
+Make a small program that can list available times for a meeting for several
+participants.
+
+The program should take as input
+  the calendar ids,
+  the length (duration in minutes) of the meeting,
+  a period within to find availability (ISO8601 time interval, 2007-03-01T13:00:00Z/2008-05-11T15:30:00Z)
+
+Optional implement a 4th argument to the service so that it can search
+availability of a specific time slot type.
+
+Pseudo code function signature
+
+findAvailableTime(array<Uuid> calendarIds, Integer duration, Iso8601TimeInteval periodToSearch [,Uuid timeSlotType]);
+
+Feel free to use any programming language and supporting libraries but remember
+you will have to show that you understand the third party libraries and their
+role in the overall system design.
+
+The calendar data for 3 persons  are included in json format. Feel free to
+import this data into your program in whatever way you feel is most suitable.
+The data files has several types of information for each calendar.
+
+Remember what we are looking for is not necessarily a full working program
+(which of course would be very nice), but how you approach the assignment to
+create such a program. How well structured and designed the solution is.
+This should however not be a reason for not writing any code. Feel free to
+create diagrams and other documents to support the comprehension of the code,
+but in the end it is the actual code which we will base our decision on.
+
+This task should take around 8 hours. We will not set any restriction on time,
+but you will not be given better consideration because you have used more time
+on the assignment. It is completely okay to submit a non-functional program.
+
+OBS. the supplied data are separated in different files by calendar, feel free
+to merge or split data to enable easier querying.
+
+Below are the structure of the supplied data briefly explained.
+
+## Calendars ##
+
+Calendar represent a person, a machine or other resource which have limited
+availability and must be booked up front. Below is a mapping between calendar id
+and owner name.
+
+Joanna Hef, 48644c7a-975e-11e5-a090-c8e0eb18c1e9
+Danny Boy, id 48cadf26-975e-11e5-b9c2-c8e0eb18c1e9
+Emma Win, 452dccfc-975e-11e5-bfa5-c8e0eb18c1e9
+
+
+
+## Appointments ##
+
+Booked appointments in a calendar. This is primary data entity and hold the
+information about time, place, persons involved and other data about an appointment
+
+Data format explained
+"appointments”: {
+    "id": Uuid, // Id of appointment
+    "calendar_id”: Uuid // Id of the calendar
+    "start": Iso-8601 // Start time for the appoinment ,
+    "end": Iso-8601 // End time for the appointment ,
+     // These are not necessary to solve the this test, but can be included if found beneficial for the solution
+    "patient_id": Uuid // Id of the patient having the appointment
+    "patient_comment": string // Comment from patient,
+    "note": string // note from calendar,
+    "time_slot_type_id": Uuid // Id of the timeslot type used setup appointment,
+    "type_id": Uuid // Id of the type of appointment,
+    "state": int // Coded value of the status of the appointment,
+    "out_of_office_location": "",
+    "out_of_office": false,
+    "completed”: boolean // has the doctor marked the appoinment as completed,
+    "is_scheduled": boolean // Was the appointment created as part of week plan
+}
+
+
+
+## Time slots ##
+
+Planned available time slots. The resource the calendar represents can be booked
+in these. Time slots can be combined create longer times of available time.
+Time slots can be viewed as suggestions for or templates to creating appointments
+
+"timeslots": {
+    "id": Uuid // Id of time slot
+    "calendar_id": Uuid // Id of the calendar
+    "start": Iso-8601 // Start time for the appoinment ,
+    "end": Iso-8601 // Start time for the appoinment ,
+     // These are not necessary to solve the this test, but can be included if found beneficial for the solution
+    "type_id": " Uuid // Id of the calendar
+    "public_bookable": true,
+    "out_of_office": false
+}
+
+
+
+## Time slots types ##
+
+Time slot types can be used to make persons or resources available for different
+kinds of use or priorities. They are not essential for this assignment, but can
+be used for the optional part.
+
+"timeslottypes": {
+    "id": Uuid // Id of the time slot type,
+    "name": string,
+    "slot_size": int // duration in minutes,
+     // These are not necessary to solve the bonus assignment, but can be included if found beneficial for the solution
+    "public_bookable": boolean,
+    "color": "#ccc",
+    "icon": "icon-home",
+    "clinic_id": "00000000-0000-4000-a002-000000000002",
+    "deleted": null,
+    "out_of_office": false,
+    "enabled": false
+}
+
+
+
+## Patients ##
+Patient meta data can be used to make more human friendly listings of the data
+but is not required or considered for this test. Most data fields should be
+self explaining.
+
+"patient_meta": {
+    "firstname": "Admin",
+    "middlename": "",
+    "lastname": "Adminsen",
+    "personal_id": "01097541139",
+    "birth_date": "1975-09-01",
+    "gender": "male",
+    "contacts": [
+        {
+            "location": "home",
+            "addresses": [
+                {
+                    "address_type": "email",
+                    "address": "utvikling@melinmedical.com"
+                },
+                {
+                    "address_type": "phone",
+                    "number": "40554135",
+                    "type": "mobile",
+                    "country_code": 47
+                },
+                {
+                    "address_type": "address",
+                    "street": "Borggata",
+                    "number": 1,
+                    "floor": 0,
+                    "identifier": "A",
+                    "postal_code": "0650",
+                    "postal_area": "Oslo",
+                    "municipal": null,
+                    "county": null,
+                    "country": "NO",
+                    "latitude": null,
+                    "longitude": null
+                }
+            ]
+        }
+    ]
+}

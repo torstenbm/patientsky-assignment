@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "patientsky/bin/python3.7",
+    "terminal.external.osxExec": "iTerm.app"
+}
