@@ -133,19 +133,13 @@ for file in patient_json_files:
 ############# Star of the show #############
 
 def find_available_time(calendar_ids, duration, period_to_search):
-    timeslots_starts_and_ends = []
-    timeblocks_for_calendars = []
+    free_timeblocks_for_calendars = []
     for calendar_id in calendar_ids:
         calendar = calendars_from_ids[calendar_id]
+        timeblocks = calendar.get_continous_free_timeblocks_in_period(period_to_search)
+        free_timeblocks_for_calendars.append(timeblocks)
 
-        timeslot_start_and_end = [(timeslot.start, timeslot.end) for timeslot in calendar.get_free_timeslots_in_period(period_to_search)]
-
-        timeslots_starts_and_ends.append(timeslot_start_and_end)
-
-        timeblockss = calendar.get_continous_free_timeblocks_in_period(period_to_search)
-        timeblocks_for_calendars.append(timeblockss)
-
-    granulated_timeblocks = [flatten(split_timeblocks(timeblockss)) for timeblockss in timeblocks_for_calendars]
+    granulated_timeblocks = [flatten(split_timeblocks(timeblocks)) for timeblocks in free_timeblocks_for_calendars]
     common_free_timeslots_granulated = list(set(granulated_timeblocks[0]).intersection(*granulated_timeblocks))
 
     common_free_timeslots_granulated.sort(key=lambda x: x[0])
