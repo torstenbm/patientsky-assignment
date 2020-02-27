@@ -1,4 +1,4 @@
-import json, datetime
+import json, datetime, sys
 
 
 ############# Util #############
@@ -13,7 +13,12 @@ def has_overlap(date_tuple_1, date_tuple_2):
 
 # Concatenates adjacent timeslots of shape (datetime1, datetime2) into
 # the longest possible continous timeslots of shape (datetime_i, datetime_j)
-def concatenate_timeslots(list_of_timeslot_tuples):
+def concatenate_timeslots(list_of_timeslot_tuples):    
+    if len(list_of_timeslot_tuples) == 0:
+        return []
+    if len(list_of_timeslot_tuples) == 1:
+        return list_of_timeslot_tuples
+
     continous_blocks = []
     continous_block_start = list_of_timeslot_tuples[0][0]
     for i in range(len(list_of_timeslot_tuples)):
@@ -77,8 +82,13 @@ class Calendar:
         self.timeslots = timeslots
     
     def get_free_timeslots_in_period(self, period):
-        period_start_string, period_end_string = period.split("/")
-        period_start, period_end = datetime.datetime.fromisoformat(period_start_string), datetime.datetime.fromisoformat(period_end_string)
+        try:
+            period_start_string, period_end_string = period.split("/")
+            period_start, period_end = datetime.datetime.fromisoformat(period_start_string), datetime.datetime.fromisoformat(period_end_string)
+        except:
+            print("The program did understand not the time interval.")
+            print("Should be of form equal to 2019-04-23T08:00:00/2019-04-27T00:00:00.")
+            sys.exit(0)
         
         timeslots_in_period = [timeslot for timeslot in self.timeslots if has_overlap( (timeslot.start, timeslot.end), (period_start, period_end) )]
         appointments_in_period = [appointment for appointment in self.appointments if has_overlap( (appointment.start, appointment.end), (period_start, period_end) )]
@@ -154,7 +164,7 @@ def find_available_time(calendar_ids, duration, period_to_search):
     common_free_timeslots_granulated.sort(key=lambda x: x[0])
     common_free_timeslots = concatenate_timeslots(common_free_timeslots_granulated)
 
-    # Filtering out timeslots shorter than duration
+    # Filtering out timeslots shorter than meeting duration
     long_enough_common_free_timeslots = []
     for common_free_timeslot in common_free_timeslots:
         minutes_diff = (common_free_timeslot[1] - common_free_timeslot[0]).total_seconds() / 60.0

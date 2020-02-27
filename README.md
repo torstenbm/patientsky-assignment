@@ -6,7 +6,7 @@ The main function produced `find_available_time(calendar_ids, duration, period)`
 
 ## Installation
 
-The program uses python 3 and the built-in json and datetime modules. It requires no further installation.
+The program uses python 3 and the built-in json, datetime and sys modules. It requires no further installation.
 
 ## Usage
 To run the program for the dummy data Danny boy.json, Emma Win.json and Joanna Hef.json, the duration 30 minutes, and the time interval string 2019-04-23T08:00:00/2019-04-27T00:00:00, execute the script. 
