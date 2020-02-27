@@ -133,25 +133,35 @@ for file in patient_json_files:
 ############# Star of the show #############
 
 def find_available_time(calendar_ids, duration, period_to_search):
+    
+    # Getting all free timeblocks from all calendars
     free_timeblocks_for_calendars = []
     for calendar_id in calendar_ids:
         calendar = calendars_from_ids[calendar_id]
         timeblocks = calendar.get_continous_free_timeblocks_in_period(period_to_search)
         free_timeblocks_for_calendars.append(timeblocks)
 
+    # Splitting the all free timeslots into timeslots of 1 minute
+    # to account for different lengths and start/end times
     granulated_timeblocks = [flatten(split_timeblocks(timeblocks)) for timeblocks in free_timeblocks_for_calendars]
+
+    # Using set intersection to find all common free 1 minute timeslots 
+    # present in all calendars
     common_free_timeslots_granulated = list(set(granulated_timeblocks[0]).intersection(*granulated_timeblocks))
 
+    # Patching 1 minute timeslots back together to find longest continous
+    # common free timeslots
     common_free_timeslots_granulated.sort(key=lambda x: x[0])
     common_free_timeslots = concatenate_timeslots(common_free_timeslots_granulated)
 
+    # Filtering out timeslots shorter than duration
     long_enough_common_free_timeslots = []
     for common_free_timeslot in common_free_timeslots:
         minutes_diff = (common_free_timeslot[1] - common_free_timeslot[0]).total_seconds() / 60.0
         if minutes_diff >= duration:
             long_enough_common_free_timeslots.append(common_free_timeslot)
 
-
+    # Printing resulting timeblocks to the console
     print("Possible timeslots for appointment booking:")
     for timeslot in long_enough_common_free_timeslots:
         print(timeslot[0].strftime("%B %d %Y,")+" from " + timeslot[0].strftime("%H:%M") + " to " + timeslot[1].strftime("%H:%M"))
